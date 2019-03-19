@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+    <th:block th:replace="layout :: head"></th:block>
+</head>
+<body>
+<nav th:replace="layout :: header"></nav>
+<nav th:replace="layout :: sidebar"></nav>
+<div class="global-category">
+    <div class="view" style="text-align: left">
+        <div class="view-column" style="margin-left: 20px; font-size: 18px">
+            <span>Number of user: </span>
+            <span th:text="${totalUsers}"></span>
+            <br/>
+            <span>Number of book: </span>
+            <span th:text="${totalBooks}"></span>
+            <br/>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <title>User Infomation</title>
+    <th:block th:replace="layout :: head"></th:block>
+
+</head>
+<body>
+<nav th:replace="layout :: header"></nav>
+<nav th:replace="layout :: sidebar"></nav>
+<div class="text-center">
+    <span th:if="${success}" th:text="${success}" class="text-success"></span>
+    <span th:if="${fail}" th:text="${fail}" class="text-danger"></span>
+</div>
+<div class="global-category">
+    <div class="view" style="margin: 0px 20px;">
+        <div class="view-column">
+            <h3>User List</h3>
+            <table class="table table-sm table-bordered">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Number of comments</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user,iterStat:${users}">
+                    <td th:text="${iterStat.index+1}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.comments.size()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${category.getName()}"></title>
+    <th:block th:replace="layout :: head"></th:block>
+</head>
+<body>
+<nav th:replace="layout :: header"></nav>
+<nav th:replace="layout :: sidebar"></nav>
+<div class="global-category">
+    <div class="view">
+        <div class="view-column">
+            <h2 th:text="${category.getName()}"></h2>
+            <h4 th:if="${#lists.isEmpty(category.books)}">There is no book</h4>
+            <div class="card-columns count" th:unless="${#lists.isEmpty(category.books)}">
+                <div class="card no-border" th:each="book:${category.books}">
+                    <a class="card-link" th:href="@{/book/{id}(id=${book.id})}">
+                        <img class="card-img-top img-book" th:src="@{/resources/upload/{imageLink}(imageLink=${book.imageLink})}" alt="">
+                        <div class="title" th:text="${book.getTitle()}"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

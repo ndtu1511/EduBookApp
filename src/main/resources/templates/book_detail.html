@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${book.getTitle()}"></title>
+    <th:block th:replace="layout :: head"></th:block>
+    <link th:href="@{/resources/css/book.css}" rel="stylesheet"/>
+</head>
+<body>
+<nav th:replace="layout :: header"></nav>
+<nav th:replace="layout :: sidebar"></nav>
+<div class="text-center">
+    <span th:if="${success}" th:text="${success}" class="text-success"></span>
+    <span th:if="${fail}" th:text="${fail}" class="text-danger"></span>
+</div>
+<div class="global-wrapper">
+    <div class="view">
+        <div class="main">
+            <div class="content">
+                <div class="content_left">
+                    <div>
+                        <div th:if="${book.imageLink}!=null">
+                            <img th:src="@{/resources/upload/{imageLink}(imageLink=${book.imageLink})}" class="img"/>
+                        </div>
+                        <div th:unless="${book.imageLink}!=null">
+                            <img src="/resources/img/book1.jpg" class="img"/>
+                        </div>
+                    </div>
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                        <div class="between-left">
+                            <ul>
+                                <li><a th:href="@{/admin/book/{id}/upload(id=${book.id})}" style="padding: 7px 16px">
+                                    Upload
+                                    Image</a></li>
+                                <li><a th:href="@{/admin/book/{id}/edit(id=${book.id})}" style="padding: 7px 16px">Edit
+                                    this
+                                    book</a></li>
+                                <li><a th:href="@{/admin/book/{id}/delete(id=${book.id})}" style="padding: 7px 16px">Delete
+                                    this
+                                    book</a></li>
+                            </ul>
+                        </div>
+                    </th:block>
+                </div>
+                <div class="content_right">
+                    <div class="content_story">
+                        <div>
+                            <h2 style="margin-block-start: 0;
+                    margin-block-end: 0;" th:text="${book.getTitle()}"></h2>
+                        </div>
+                        <div>
+                            <p style="font-size: 22px;">By
+                                <th:block th:each="author, iterStat:${book.getAuthors()}">
+                                    <span th:if="${iterStat.index}>=1">and</span>
+                                    <span style="
+                        font-weight: 700;" th:text="${author.getName()}"></span>
+                                </th:block>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="content_main">
+                        <div class="text">
+                            <div>
+                                <p th:text="${book.getBrief()}">
+                                    <span id="dots">...</span>
+                                </p>
+                                <span id="more" style="display: none;">
+                            <p>
+                            </p>
+                    </span>
+                            </div>
+                        </div>
+                        <dl class="more_info">
+                            <dt>PUBLISHER:</dt>
+                            <dd th:text="${book.getPublisher().getName()}"></dd>
+                            <dt>RELEASED:</dt>
+                            <dd th:text="${#dates.format(book.getPublishDate(),'dd MMM, yyyy')}"></dd>
+                            <dt>ISBN:</dt>
+                            <dd th:text="${book.getIsbn()}"></dd>
+                            <dt>LANGUAGE:</dt>
+                            <dd th:text="${book.getLanguage()}"></dd>
+                        </dl>
+                        <form th:action="@{/book/{id}/comment(id=${book.id})}" method="post">
+                            <div class="comment-submit">
+                                <label style="display: block"><span class="required label-text">Write a review</span>
+                                </label>
+                                <textarea class="textarea" name="content" required="required"
+                                          placeholder="Tell us about this book"
+                                          maxlength="10000"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                        <h3 style="margin-top: 50px">Reader review</h3>
+                        <div class="comments">
+                            <span th:if="${#lists.isEmpty(book.comments)}">There is no comment</span>
+                            <th:block th:unless="${#lists.isEmpty(book.comments)}">
+                                <div th:each="comment : ${book.comments}" style="margin-bottom: 20px">
+                                    <strong th:text="${comment.user.username}"></strong>
+                                    <!--<span th:text="${#request.userPrincipal.name}"></span>-->
+                                    <span th:text="${#dates.format(comment.created,'dd MMM, yyyy')}"
+                                          style="float: right"></span>
+                                    <!--<th:block sec:authorize="hasRole('ROLE_ADMIN')" >-->
+                                        <a th:href="@{/book/{id}/comment/{comment_id}/delete(id=${book.id},comment_id=${comment.id})}"
+                                           style="float: right;margin-right: 10px">Delete</a>
+                                    <!--</th:block>-->
+                                    <br/>
+                                    <span th:text="${comment.content}"></span>
+                                    <hr/>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
