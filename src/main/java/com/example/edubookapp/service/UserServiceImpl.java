@@ -74,4 +74,14 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findOne(Integer id) {
         return userRepository.findById(id);
     }
+
+    @Override
+    public Boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 }

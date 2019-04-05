@@ -2,7 +2,7 @@ package com.example.edubookapp.controller;
 
 import com.example.edubookapp.model.Book;
 import com.example.edubookapp.model.Comment;
-import com.example.edubookapp.model.CustomUserDetail;
+import com.example.edubookapp.security.CustomUserDetail;
 import com.example.edubookapp.model.User;
 import com.example.edubookapp.service.BookService;
 import com.example.edubookapp.service.CommentService;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +30,7 @@ public class CommentController {
                           @RequestParam("content") String content){
         Book book = bookService.findOne(id).get();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = ((CustomUserDetail) authentication.getPrincipal()).getUser();
+        User currentUser = ((User)authentication.getPrincipal());
         Comment comment = new Comment();
         comment.setContent(content);
         comment.setCreated(new Date());
@@ -51,7 +50,7 @@ public class CommentController {
         Book book = bookService.findOne(id).get();
         Comment comment = commentService.findOne(commentId).get();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = ((CustomUserDetail) authentication.getPrincipal()).getUser();
+        User currentUser = ((User)authentication.getPrincipal());
         if ((comment.getUser().getUsername().equalsIgnoreCase(currentUser.getUsername()))
                 || (currentUser.getUsername().equalsIgnoreCase("admin"))){
             commentService.delete(commentId);

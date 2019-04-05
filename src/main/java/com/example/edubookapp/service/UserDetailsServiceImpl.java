@@ -1,6 +1,6 @@
 package com.example.edubookapp.service;
 
-import com.example.edubookapp.model.CustomUserDetail;
+import com.example.edubookapp.security.CustomUserDetail;
 import com.example.edubookapp.model.Role;
 import com.example.edubookapp.model.User;
 import com.example.edubookapp.repository.UserRepository;
@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -22,20 +21,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional
-    public CustomUserDetail loadUserByUsername(String username)
+    public CustomUserDetail loadUserByUsername(String usernameOrEmail)
             throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsernameOrEmail(usernameOrEmail,usernameOrEmail);
         if (user==null){
             throw new UsernameNotFoundException("User not found");
         }
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        List<Role> roles = user.getRoles();
-        for (Role role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        return CustomUserDetail.create(user);
+    }
+    // This method is used by JWTAuthenticationFilter
+    @Transactional
+    public CustomUserDetail loadUserById(int id){
+        User user  = userRepository.findById(id);
+        if (user==null){
+            throw new UsernameNotFoundException("User not found with id:"+id);
         }
-        CustomUserDetail customUserDetail = new CustomUserDetail();
-        customUserDetail.setUser(user);
-        customUserDetail.setAuthorities(authorities);
-        return customUserDetail;
+        return CustomUserDetail.create(user);
     }
 }

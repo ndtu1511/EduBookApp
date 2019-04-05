@@ -5,6 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @SpringBootApplication
 public class EdubookappApplication extends SpringBootServletInitializer {
 
@@ -15,5 +18,9 @@ public class EdubookappApplication extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(EdubookappApplication.class);
+    }
+    @PostConstruct
+    void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     }
 }

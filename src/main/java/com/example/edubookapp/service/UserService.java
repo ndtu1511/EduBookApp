@@ -1,6 +1,7 @@
 package com.example.edubookapp.service;
 
 import com.example.edubookapp.model.User;
+import org.springframework.util.StringUtils;
 
 import javax.jws.soap.SOAPBinding;
 import java.util.List;
@@ -16,4 +17,6 @@ public interface UserService {
     long countAll();
     void delete(User user);
     Optional<User> findOne(Integer id);
+    Boolean existsByUsername(String username);
+    Boolean existsByEmail(String email);
 }
