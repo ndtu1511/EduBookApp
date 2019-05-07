@@ -8,7 +8,7 @@ Api cho tất cả mọi người
   /api/book/{id}: trả về 3 đối tượng: 1 là thông tin chi tiết quyển sách, 2 là id, tên người dùng,3 là kiểm tra xem người dùng đó đã like quyển sách chưa
   /api/category: trả về thông tin các category bao gồm id, name, imageLink
   /api/category/{id}: trả về thông tin các quyển sách(id,title,imageLink) có trong category đó
-  /api/search?abc: trả về thông tin các quyển sách mà tên chứa 'abc'
+  /api/search?s=abc: trả về thông tin các quyển sách mà tên chứa 'abc'
   /api/auth/logout: đăng xuất
   
   - api POST:
