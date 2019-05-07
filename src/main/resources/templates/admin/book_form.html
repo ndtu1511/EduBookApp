@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+>
 <head>
     <meta charset="UTF-8">
     <title>Book Form</title>
@@ -22,21 +22,16 @@
                         <label for="title">Title </label>
                         <input type="text" class="input-control"
                                id="title" th:field="*{title}" placeholder="Title" required autofocus/><br/>
-                        <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger">..</span>
-                    </div>
-                    <div class="form-group">
-                        <label for="authorsName">Authors Name </label>
-                        <input type="text" class="input-control"
-                               id="authorsName" th:field="*{authorsName}" placeholder="Authors Name"
-                               required/><br/>
-                        <span th:if="${#fields.hasErrors('authorsName')}" th:errors="*{authorsName}"
+                        <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
                               class="text-danger">..</span>
                     </div>
                     <div class="form-group">
-                        <label for="isbn">Isbn </label>
+                        <label for="authorName">Author Name </label>
                         <input type="text" class="input-control"
-                               id="isbn" th:field="*{isbn}" placeholder="Isbn" required/><br/>
-                        <span th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}" class="text-danger">..</span>
+                               id="authorName" th:field="*{authorName}" placeholder="Author Name"
+                               required/><br/>
+                        <span th:if="${#fields.hasErrors('authorsName')}" th:errors="*{authorName}"
+                              class="text-danger">..</span>
                     </div>
                     <div class="form-group">
                         <label for="publisherName">Publish Name </label>
@@ -67,6 +62,14 @@
                                id="language" th:field="*{language}" placeholder="Language"
                                required/><br/>
                         <span th:if="${#fields.hasErrors('language')}" th:errors="*{language}"
+                              class="text-danger">..</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="pages">Number of pages </label>
+                        <input type="number" class="input-control"
+                               id="pages" th:field="*{pages}" placeholder="Number of Pages"
+                               required/><br/>
+                        <span th:if="${#fields.hasErrors('pages')}" th:errors="*{pages}"
                               class="text-danger">..</span>
                     </div>
                     <div class="form-group">

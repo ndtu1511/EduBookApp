@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Book List</title>
+    <th:block th:replace="layout :: head"></th:block>
+</head>
+<body>
+<nav th:replace="layout :: header"></nav>
+<nav th:replace="layout :: sidebar"></nav>
+<div class="global-category">
+    <div class="view" style="margin: 0px 20px;">
+        <div class="view-column">
+            <h3>Pending Book List</h3>
+            <th:block th:if="${success} or ${fail}">
+                <span th:if="${success}" th:text="${success}" class="text-success pull-left"></span><br/>
+                <span th:if="${fail}" th:text="${fail}" class="text-danger pull-left"></span><br/>
+            </th:block>
+            <h4 th:if="${#lists.isEmpty(books)}">There is not book available</h4>
+            <table th:unless="${#lists.isEmpty(books)}" class="table table-sm table-bordered">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Request user</th>
+                    <th>Link</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="book,iterStat:${books}" style="text-align: left">
+                    <td th:text="${iterStat.index+1}" style="text-align: center"></td>
+                    <td th:text="${book.title}"></td>
+                    <td th:text="${book.getCategory().name}"></td>
+                    <td th:text="${book.getRequestUsername()}" style="text-align: center"></td>
+                    <td>
+                        <a th:href="@{/pending/book/{requestUsername}/{id}(id=${book.id},requestUsername = ${book.requestUsername})}">Link</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

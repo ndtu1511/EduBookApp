@@ -1,6 +1,7 @@
 package com.example.edubookapp.service;
 
 import com.example.edubookapp.model.Book;
+import com.example.edubookapp.model.PendingBook;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -13,7 +14,6 @@ public interface BookService {
 
     Book findByTitle(String title);
 
-    Book findByIsbn(String isbn);
 
     long countAll();
 
@@ -25,10 +25,18 @@ public interface BookService {
 
     Book save(Book book);
 
+    Book registerPending(PendingBook pendingBook);
+
     void delete(Integer id);
 
     Optional<Book> findOne(Integer id);
 
-    Book upload(Book book, MultipartFile imageFile);
+    Book uploadImage(Book book, MultipartFile imageFile);
     Book register(Book book);
+
+    List<Book> findByUserId(Integer userId);
+
+    void writeFile(MultipartFile file, String path);
+
+    Book uploadContent(Book book, MultipartFile file);
 }

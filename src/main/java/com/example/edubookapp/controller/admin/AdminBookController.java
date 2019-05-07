@@ -2,10 +2,7 @@ package com.example.edubookapp.controller.admin;
 
 import com.example.edubookapp.model.Book;
 import com.example.edubookapp.model.Category;
-import com.example.edubookapp.service.AuthorService;
-import com.example.edubookapp.service.BookService;
-import com.example.edubookapp.service.CategoryService;
-import com.example.edubookapp.service.PublisherService;
+import com.example.edubookapp.service.*;
 import com.example.edubookapp.validator.BookValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.beans.PropertyEditorSupport;
 import java.util.Optional;
@@ -28,36 +24,52 @@ public class AdminBookController {
     @Autowired
     private CategoryService categoryService;
     @Autowired
-    private AuthorService authorService;
+    private PendingBookService pendingBookService;
     @Autowired
-    private PublisherService publisherService;
+    private PendingCommentService pendingCommentService;
+    @Autowired
+    private CommentService commentService;
     @Autowired
     private BookValidator bookValidator;
-    public static String urlAdd=null;
     @GetMapping("/admin/book")
     public String index(Model model){
         model.addAttribute("books",bookService.findAll());
         model.addAttribute("categories",categoryService.findAll());
         return "admin/book_list";
     }
-    @GetMapping("/book/{id}")
-    public String show(@PathVariable("id") Integer id,Model model){
-        model.addAttribute("book", bookService.findOne(id).get());
+
+    @GetMapping("/admin/pendingBook")
+    public String indexPending(Model model) {
+        model.addAttribute("books", pendingBookService.findAll());
         model.addAttribute("categories",categoryService.findAll());
-        return "book_detail";
+        return "admin/pending_book_list";
     }
-    @GetMapping("/admin/book/add")
-    public String add(Model model, HttpServletRequest request){
-        model.addAttribute("book",new Book());
+
+    @GetMapping("/admin/pendingComment")
+    public String showPendingComment(Model model) {
+        model.addAttribute("pendingComments", pendingCommentService.findAll());
         model.addAttribute("categories",categoryService.findAll());
-        urlAdd=request.getRequestURI();
-        return "admin/book_form";
+        return "admin/pending_comment_list";
+    }
+
+    @GetMapping("/admin/pendingComment/{id}/save")
+    public String savePendingComment(@PathVariable Integer id, RedirectAttributes redirect) {
+        commentService.register(pendingCommentService.findOne(id).get());
+        pendingCommentService.delete(id);
+        redirect.addFlashAttribute("success", "Save comment successfully");
+        return "redirect:/admin/pendingComment";
+    }
+
+    @GetMapping("/admin/pendingComment/{id}/delete")
+    public String deletePendingComment(@PathVariable Integer id, RedirectAttributes redirect) {
+        pendingCommentService.delete(id);
+        redirect.addFlashAttribute("success", "Delete comment successfully");
+        return "redirect:/admin/pendingComment";
     }
     @GetMapping("/admin/book/{id}/edit")
-    public String edit(@PathVariable("id") Integer id,Model model, HttpServletRequest request){
+    public String edit(@PathVariable("id") Integer id, Model model) {
         model.addAttribute("book",bookService.findOneWithCategory(id));
         model.addAttribute("categories",categoryService.findAll());
-        urlAdd = request.getRequestURI();
         return "admin/book_form";
     }
     @GetMapping("/admin/book/{id}/delete")
@@ -87,18 +99,49 @@ public class AdminBookController {
         redirect.addFlashAttribute("success","Saved this book successfully");
         return "redirect:/admin/book";
     }
+
+    @PostMapping("/admin/book/{requestUsername}/{id}/register")
+    public String registerNewBook(@PathVariable Integer id,
+                                  @PathVariable String requestUsername,
+                                  RedirectAttributes redirect) {
+        bookService.registerPending(pendingBookService.findByIdAndRequestUsername(id, requestUsername));
+        pendingBookService.delete(id);
+        redirect.addFlashAttribute("success", "Post this book successfully");
+        return "redirect:/admin/book";
+    }
+
+    @GetMapping("/admin/book/{requestUsername}/{id}/delete")
+    public String deletePendingBook(@PathVariable Integer id,
+                                    @PathVariable String requestUsername,
+                                    RedirectAttributes redirect) {
+        pendingBookService.delete(id);
+        redirect.addFlashAttribute("success", "Delete this book successfully");
+        return "redirect:/admin/book";
+    }
     @GetMapping("/admin/book/{id}/upload")
     public String getUpload(@PathVariable("id") Integer id,Model model){
         model.addAttribute("book",bookService.findOne(id).get());
         model.addAttribute("categories",categoryService.findAll());
         return "admin/book_upload";
     }
-    @PostMapping("/admin/book/{id}/upload")
-    public String postUpload(@PathVariable("id") Integer id,
+
+    @PostMapping("/admin/book/{id}/upload/image")
+    public String postUploadImage(@PathVariable("id") Integer id,
                              @RequestParam("imageLink")MultipartFile imageFile,
                              RedirectAttributes redirectAttributes){
         Book book = bookService.findOne(id).get();
-        bookService.upload(book,imageFile);
+        bookService.uploadImage(book, imageFile);
+
+        redirectAttributes.addFlashAttribute("success", "Upload image successfully");
+        return "redirect:/book/{id}";
+    }
+
+    @PostMapping("/admin/book/{id}/upload/content")
+    public String postUploadContent(@PathVariable("id") Integer id,
+                                    @RequestParam("contentLink") MultipartFile contentFile,
+                                    RedirectAttributes redirectAttributes) {
+        Book book = bookService.findOne(id).get();
+        bookService.uploadContent(book, contentFile);
 
         redirectAttributes.addFlashAttribute("success","Upload image successfully");
         return "redirect:/book/{id}";

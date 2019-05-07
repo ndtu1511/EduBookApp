@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${book.getTitle()}"></title>
+    <th:block th:replace="layout :: head"></th:block>
+    <link th:href="@{/resources/css/book.css}" rel="stylesheet"/>
+</head>
+<body>
+<nav th:replace="layout :: header"></nav>
+<nav th:replace="layout :: sidebar"></nav>
+<div class="text-center">
+    <span th:if="${success}" th:text="${success}" class="text-success"></span>
+    <span th:if="${fail}" th:text="${fail}" class="text-danger"></span>
+</div>
+<div class="global-wrapper">
+    <div class="view">
+        <div class="main">
+            <div class="content">
+                <div class="content_left">
+                    <div>
+                        <div th:if="${book.imageLink}!=null">
+                            <img th:src="@{/resources/upload/image/{imageLink}(imageLink=${book.imageLink})}"
+                                 class="img"/>
+                        </div>
+                        <div th:unless="${book.imageLink}!=null">
+                            <img src="/resources/img/book1.jpg" class="img"/>
+                        </div>
+                    </div>
+                    <div class="between-left">
+                        <ul>
+                            <li>
+                                <a th:href="@{/pending/book/{requestUsername}/{id}/upload(id=${book.id},requestUsername = ${book.requestUsername})}"
+                                   style="padding: 7px 16px">
+                                    Upload
+                                    Image & Content</a>
+                            </li>
+                            <li>
+                                <a th:href="@{/pending/book/{requestUsername}/{id}/edit(id=${book.id},requestUsername = ${book.requestUsername})}"
+                                   style="padding: 7px 16px">Edit
+                                    this
+                                    book</a>
+                            </li>
+                            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                <li>
+                                    <form th:action="@{/admin/book/{requestUsername}/{id}/register(id=${book.id},requestUsername = ${book.requestUsername})}"
+                                          method="post">
+                                        <button type="submit" class="btn btn-primary">Post this Book</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <a th:href="@{/admin/book/{requestUsername}/{id}/delete(id=${book.id},requestUsername = ${book.requestUsername})}"
+                                       style="padding: 7px 16px">Delete
+                                        this
+                                        book</a></li>
+                            </th:block>
+                            <th:block th:if="${book.contentLink}!=null">
+                                <li>
+                                    <a th:href="@{/read/{contentLink}(contentLink = ${book.contentLink})}"
+                                       style="padding: 7px 16px">Read Book</a>
+                                </li>
+                            </th:block>
+                        </ul>
+                    </div>
+                </div>
+                <div class="content_right">
+                    <div class="content_story">
+                        <div>
+                            <h2 style="margin-block-start: 0;
+                    margin-block-end: 0;" th:text="${book.getTitle()}"></h2>
+                        </div>
+                        <div>
+                            <p style="font-size: 22px;">By
+                                <span style="
+                        font-weight: 700;" th:text="${book.getAuthorName()}"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="content_main">
+                        <div class="text">
+                            <div>
+                                <p th:text="${book.getBrief()}">
+                                    <span id="dots">...</span>
+                                </p>
+                                <span id="more" style="display: none;">
+                            <p>
+                            </p>
+                    </span>
+                            </div>
+                        </div>
+                        <dl class="more_info">
+                            <dt>PUBLISHER:</dt>
+                            <dd th:text="${book.getPublisherName()}"></dd>
+                            <dt>RELEASED:</dt>
+                            <dd th:text="${#dates.format(book.getPublishDate(),'dd MMM, yyyy')}"></dd>
+                            <dt>REQUEST USERNAME:</dt>
+                            <dd th:text="${book.getRequestUsername()}"></dd>
+                            <dt>LANGUAGE:</dt>
+                            <dd th:text="${book.getLanguage()}"></dd>
+                            <dt>NUMBER OF PAGES:</dt>
+                            <dd th:text="${book.getPages()}"></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

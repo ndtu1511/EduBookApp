@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Comment List</title>
+    <th:block th:replace="layout :: head"></th:block>
+</head>
+<body>
+<nav th:replace="layout :: header"></nav>
+<nav th:replace="layout :: sidebar"></nav>
+<div class="global-category">
+    <div class="view" style="margin: 0px 20px;">
+        <div class="view-column">
+            <h3>Pending Comment List</h3>
+            <th:block th:if="${success} or ${fail}">
+                <span th:if="${success}" th:text="${success}" class="text-success pull-left"></span><br/>
+                <span th:if="${fail}" th:text="${fail}" class="text-danger pull-left"></span><br/>
+            </th:block>
+            <h4 th:if="${#lists.isEmpty(pendingComments)}">There is not pending comment</h4>
+            <table th:unless="${#lists.isEmpty(pendingComments)}" class="table table-sm table-bordered">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Request User</th>
+                    <th>Book</th>
+                    <th>Content</th>
+                    <th>Date</th>
+                    <th>Accept</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="pendingComment,iterStat:${pendingComments}" style="text-align: left">
+                    <td th:text="${iterStat.index+1}" style="text-align: center"></td>
+                    <td th:text="${pendingComment.getUsername()}"></td>
+                    <td th:text="${pendingComment.getBookname()}"></td>
+                    <td th:text="${pendingComment.getContent()}"></td>
+                    <td th:text="${#dates.format(pendingComment.getCreated(),'dd MMM, yyyy')}"></td>
+                    <td><a class="text-success"
+                           th:href="@{/admin/pendingComment/{id}/save(id=${pendingComment.getId()})}">Accept</a></td>
+                    <td><a class="text-danger"
+                           th:href="@{/admin/pendingComment/{id}/delete(id=${pendingComment.getId()})}">Delete</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

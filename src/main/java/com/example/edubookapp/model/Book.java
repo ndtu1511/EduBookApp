@@ -1,11 +1,13 @@
 package com.example.edubookapp.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,11 +21,6 @@ public class Book implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
     private int id;
-
-    @NotEmpty
-    @Length(max = 60)
-    @Column(name = "isbn", nullable = false, unique = true)
-    private String isbn;
 
     @NotEmpty
     @Column(name = "title", nullable = false)
@@ -46,50 +43,58 @@ public class Book implements Serializable {
     @Column(name = "image_link")
     private String imageLink;
 
+    @Column(name = "content_link")
+    private String contentLink;
+    @NotNull
+    @Range(min = 1, max = 9999)
+    @Column(name = "number_of_pages", nullable = false)
+    private Integer pages;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id",referencedColumnName = "id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler","books"})
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "publisher_id", nullable = false,referencedColumnName = "id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler","books"})
-    private Publisher publisher;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler","book"})
     private List<Comment> comments = new ArrayList<>();
 
-    @JoinTable(
-            name = "author_book",
-            joinColumns = {@JoinColumn(name = "book_id",referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "author_id",referencedColumnName = "id")}
-    )
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JsonIgnoreProperties("books")
-    private List<Author> authors = new ArrayList<>();
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
 
-    @Transient
-    @JsonIgnore
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Download> downloads = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_user_id", referencedColumnName = "id")
+    private User user;
+
+    @NotEmpty
+    @Column(name = "publisher_name", nullable = false)
     private String publisherName;
-    @Transient
-    @JsonIgnore
-    private String authorsName;
+
+    @NotEmpty
+    @Column(name = "author_name", nullable = false)
+    private String authorName;
     public Book() {
         this.imageLink=null;
+        this.contentLink = null;
     }
 
-    public Book(String isbn, String title, String brief, String language, Date publishDate,
-                String imageLink, Category category, Publisher publisher, List<Author> authors) {
-        this.isbn = isbn;
+    public Book(String title, String brief, String language, Date publishDate,
+                String imageLink, Category category, String publisherName,
+                String authorName, User user, String contentLink, Integer pages) {
         this.title = title;
         this.brief = brief;
         this.language = language;
         this.publishDate = publishDate;
         this.imageLink = imageLink;
         this.category = category;
-        this.publisher = publisher;
-        this.authors = authors;
+        this.publisherName = publisherName;
+        this.authorName = authorName;
+        this.user = user;
+        this.contentLink = contentLink;
+        this.pages = pages;
     }
 
     public int getId() {
@@ -98,14 +103,6 @@ public class Book implements Serializable {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
     }
 
     public String getTitle() {
@@ -152,29 +149,16 @@ public class Book implements Serializable {
         return category;
     }
 
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+
     public void setCategory(Category category) {
         this.category = category;
-    }
-
-    public Publisher getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(Publisher publisher) {
-        this.publisher = publisher;
-    }
-
-    public List<Author> getAuthors() {
-        return authors;
-    }
-
-    public void addAuthor(Author author) {
-        authors.add(author);
-        author.getBooks().add(this);
-    }
-    public void removeAuthor(Author author){
-        authors.remove(author);
-        author.getBooks().remove(this);
     }
 
     public String getPublisherName() {
@@ -185,13 +169,6 @@ public class Book implements Serializable {
         this.publisherName = publisherName;
     }
 
-    public String getAuthorsName() {
-        return authorsName;
-    }
-
-    public void setAuthorsName(String authorsName) {
-        this.authorsName = authorsName;
-    }
     public List<Comment> getComments() {
         return comments;
     }
@@ -203,5 +180,57 @@ public class Book implements Serializable {
     public void removeComments(Comment comment) {
         comments.remove(comment);
         comment.setBook(null);
+    }
+
+    public List<Like> getLikes() {
+        return likes;
+    }
+
+    public void addLikes(Like like) {
+        likes.add(like);
+        like.setBook(this);
+    }
+
+    public void removeLikes(Like like) {
+        likes.remove(like);
+        like.setBook(null);
+    }
+
+    public List<Download> getDownloads() {
+        return downloads;
+    }
+
+    public void addDownloads(Download download) {
+        downloads.add(download);
+        download.setBook(this);
+    }
+
+    public void removeDownloads(Download download) {
+        downloads.remove(download);
+        download.setBook(null);
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getContentLink() {
+        return contentLink;
+    }
+
+    public void setContentLink(String contentLink) {
+        this.contentLink = contentLink;
+    }
+
+    public Integer getPages() {
+        return pages;
+    }
+
+    public void setPages(Integer pages) {
+        this.pages = pages;
     }
 }

@@ -54,8 +54,16 @@ public class User implements Serializable {
     private List<Role> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler","user"})
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Book> books = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Download> downloads = new ArrayList<>();
     public User() {
     }
 
@@ -125,5 +133,47 @@ public class User implements Serializable {
     public void removeComments(Comment comment) {
         comments.remove(comment);
         comment.setUser(null);
+    }
+
+    public List<Like> getLikes() {
+        return likes;
+    }
+
+    public void addLikes(Like like) {
+        likes.add(like);
+        like.setUser(this);
+    }
+
+    public void removeLikes(Like like) {
+        likes.remove(like);
+        like.setUser(null);
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public List<Download> getDownloads() {
+        return downloads;
+    }
+
+    public void addDownloads(Download download) {
+        downloads.add(download);
+        download.setUser(this);
+    }
+
+    public void removeDownloads(Download download) {
+        downloads.remove(download);
+        download.setUser(null);
+    }
+
+    public void addBooks(Book book) {
+        books.add(book);
+        book.setUser(this);
+    }
+
+    public void removeBooks(Book book) {
+        books.remove(book);
+        book.setUser(null);
     }
 }

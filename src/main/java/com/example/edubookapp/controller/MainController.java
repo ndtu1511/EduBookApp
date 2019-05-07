@@ -27,11 +27,10 @@ public class MainController {
     }
 
     @GetMapping("/search")
-    public String search(@RequestParam("s") String s, Model model){
+    public String search(@RequestParam(value = "s", required = false) String s, Model model) {
         if (s.isEmpty()){
             return "redirect:/";
         }
-        System.out.println("asdasdasdasd");
         model.addAttribute("books",bookService.search(s));
         model.addAttribute("categories",categoryService.findAll());
         return "book_search";

@@ -1,12 +1,9 @@
 package com.example.edubookapp.service;
 
-import com.example.edubookapp.model.Author;
 import com.example.edubookapp.model.Book;
-import com.example.edubookapp.model.Category;
-import com.example.edubookapp.model.Publisher;
-import com.example.edubookapp.repository.AuthorRepository;
+import com.example.edubookapp.model.PendingBook;
 import com.example.edubookapp.repository.BookRepository;
-import com.example.edubookapp.repository.PublisherRepository;
+import com.example.edubookapp.repository.UserRepository;
 import com.example.edubookapp.util.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,9 +21,7 @@ public class BookServiceImpl implements BookService{
     @Autowired
     private BookRepository bookRepository;
     @Autowired
-    private AuthorRepository authorRepository;
-    @Autowired
-    private PublisherRepository publisherRepository;
+    private UserRepository userRepository;
     @Override
     @Transactional
     public Iterable<Book> findAll() {
@@ -43,12 +38,6 @@ public class BookServiceImpl implements BookService{
     @Transactional
     public Book findByTitle(String title) {
         return bookRepository.findByTitle(title);
-    }
-
-    @Override
-    @Transactional
-    public Book findByIsbn(String isbn) {
-        return bookRepository.findByIsbn(isbn);
     }
 
     @Override
@@ -96,37 +85,59 @@ public class BookServiceImpl implements BookService{
 
     @Override
     @Transactional
-    public Book upload(Book book, MultipartFile imageFile) {
+    public void writeFile(MultipartFile file, String path) {
         try {
-            byte[] bytes = imageFile.getBytes();
-            String fileName = imageFile.getOriginalFilename();
-            String fileLocation = new File(Const.UPLOAD_FOLDER).getAbsolutePath() +"\\"+fileName;
-            System.out.println(fileLocation);
+            byte[] bytes = file.getBytes();
+            String fileName = file.getOriginalFilename();
+            String fileLocation = new File(path).getAbsolutePath() + "/" + fileName;
             FileOutputStream fos = new FileOutputStream(fileLocation);
             fos.write(bytes);
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        book.setImageLink(imageFile.getOriginalFilename());
+    }
+
+    @Override
+    @Transactional
+    public Book uploadImage(Book book, MultipartFile file) {
+        writeFile(file, Const.UPLOAD_IMAGE);
+        book.setImageLink(file.getOriginalFilename());
         return bookRepository.save(book);
     }
 
     @Override
-    public Book register(Book book) {
-        String[] authors = book.getAuthorsName().split("[^a-zA-Z -'.]");
-        for (String authorName: authors){
-            authorName = authorName.replaceAll("^\\s+|\\s+$","");
-            if (authorRepository.findByName(authorName)==null){
-                authorRepository.save(new Author(authorName));
-            }
-            book.addAuthor(authorRepository.findByName(authorName));
-        }
-        String publisherName = book.getPublisherName().replaceAll("^\\s+|\\s+$","");
-        if (publisherRepository.findByName(publisherName)==null){
-            publisherRepository.save(new Publisher(publisherName));
-        }
-        book.setPublisher(publisherRepository.findByName(publisherName));
+    @Transactional
+    public Book uploadContent(Book book, MultipartFile file) {
+        writeFile(file, Const.UPLOAD_PDF);
+        book.setContentLink(file.getOriginalFilename());
         return bookRepository.save(book);
+    }
+
+    @Override
+    public Book registerPending(PendingBook pendingBook) {
+        Book book = new Book();
+        book.setTitle(pendingBook.getTitle());
+        book.setBrief(pendingBook.getBrief());
+        book.setImageLink(pendingBook.getImageLink());
+        book.setCategory(pendingBook.getCategory());
+        book.setUser(userRepository.findByUsername(pendingBook.getRequestUsername()));
+        book.setLanguage(pendingBook.getLanguage());
+        book.setPublishDate(pendingBook.getPublishDate());
+        book.setAuthorName(pendingBook.getAuthorName());
+        book.setPublisherName(pendingBook.getPublisherName());
+        book.setContentLink(pendingBook.getContentLink());
+        book.setPages(pendingBook.getPages());
+        return bookRepository.save(book);
+    }
+    @Override
+    public Book register(Book book) {
+        return bookRepository.save(book);
+    }
+
+
+    @Override
+    public List<Book> findByUserId(Integer userId) {
+        return bookRepository.findByUserId(userId);
     }
 }

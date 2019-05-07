@@ -34,6 +34,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/resources/img/**").addResourceLocations("classpath:/static/img/");
         String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:/static/upload/"};
         registry.addResourceHandler("/resources/upload/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
+//        String[] CLASSPATH_RESOURCE_LOCATIONS_PDF = {"classpath:/static/pdf_link/"};
+//        registry.addResourceHandler("/resources/upload/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS_PDF);
+
     }
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

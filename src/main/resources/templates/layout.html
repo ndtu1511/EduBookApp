@@ -30,6 +30,11 @@
             <li class="nav-item mx-0 mx-lg-1">
                 <a class="nav-link py-3 px-0 px-lg-3 rounded" th:href="@{/#categories}">Categories</a>
             </li>
+            <th:block sec:authorize="hasRole('ROLE_MEMBER')">
+                <li class="nav-item mx-0 mx-lg-1">
+                    <a class="nav-link py-3 px-0 px-lg-3 rounded" th:href="@{/userInfo}">User Information</a>
+                </li>
+            </th:block>
             <th:block sec:authorize="hasRole('ROLE_ADMIN')">
                 <li class="nav-item mx-0 mx-lg-1">
                     <a class="nav-link py-3 px-0 px-lg-3 rounded" th:href="@{/admin}">Admin</a>
@@ -85,6 +90,13 @@
                         <li class="nav-row">
                             <a th:href="@{/admin/book}">Book List</a>
                         </li>
+                        <li class="nav-row">
+                            <a th:href="@{/admin/pendingBook}">Pending Book List</a>
+                        </li>
+                        <li class="nav-row">
+                            <a th:href="@{/admin/pendingComment}">Pending Comment List</a>
+                        </li>
+
                         <li class="nav-row">
                             <a th:href="@{/admin/user}">User List</a>
                         </li>

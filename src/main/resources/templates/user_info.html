@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>User Information</title>
+    <th:block th:replace="layout :: head"></th:block>
+</head>
+<body>
+<nav th:replace="layout :: header"></nav>
+<nav th:replace="layout :: sidebar"></nav>
+<div class="global-category">
+    <div class="view" style="text-align: left">
+        <div class="view-column" style="margin-left: 20px; font-size: 18px">
+            <h3>User Information</h3>
+            <span>Username: </span>
+            <span th:text="${user.username}"></span>
+            <br/>
+            <span>Email: </span>
+            <span th:text="${user.email}"></span>
+            <br/>
+            <span>Number of Comment: </span>
+            <span th:text="${user.comments.size()}"></span>
+            <br/>
+            <a th:href="@{/book/add}" class="btn btn-primary"
+               style="margin-bottom: 20px; text-decoration: none">
+                <span></span>Post a book<br/>
+            </a>
+            <h4 th:if="${#lists.isEmpty(pendingbooks)}">There is no pending book</h4>
+            <h4 th:unless="${#lists.isEmpty(pendingbooks)}">Pending Book List</h4>
+            <table th:unless="${#lists.isEmpty(pendingbooks)}" class="table table-sm table-bordered">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Link</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="book,iterStat:${pendingbooks}" style="text-align: left">
+                    <td th:text="${iterStat.index+1}" style="text-align: center"></td>
+                    <td th:text="${book.title}"></td>
+                    <td th:text="${book.getCategory().name}"></td>
+                    <td>
+                        <a th:href="@{/pending/book/{requestUsername}/{id}(id=${book.id},requestUsername = ${book.requestUsername})}">Link</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

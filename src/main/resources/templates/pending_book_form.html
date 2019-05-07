@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Book Form</title>
+    <th:block th:replace="layout :: head"></th:block>
+    <link th:href="@{/resources/css/book.css}" rel="stylesheet"/>
+</head>
+<body>
+<nav th:replace="layout :: header"></nav>
+<nav th:replace="layout :: sidebar"></nav>
+<div class="global-wrapper">
+    <div class="view">
+        <div class="main">
+            <div>
+                <h3>Form Book</h3>
+                <form th:action="@{/book/save}" th:object="${pendingBook}" method="post" novalidate="novalidate"
+                      enctype="multipart/form-data">
+                    <input type="hidden" th:field="*{id}"/>
+                    <input type="hidden" th:field="*{imageLink}"/>
+                    <div class="form-group">
+                        <label for="title">Title </label>
+                        <input type="text" class="input-control"
+                               id="title" th:field="*{title}" placeholder="Title" required autofocus/><br/>
+                        <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
+                              class="text-danger">..</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="authorName">Authors Name </label>
+                        <input type="text" class="input-control"
+                               id="authorName" th:field="*{authorName}" placeholder="Author Name"
+                               required/><br/>
+                        <span th:if="${#fields.hasErrors('authorName')}" th:errors="*{authorName}"
+                              class="text-danger">..</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="publisherName">Publish Name </label>
+                        <input type="text" class="input-control"
+                               id="publisherName" th:field="*{publisherName}" placeholder="Publish Name"
+                               required/><br/>
+                        <span th:if="${#fields.hasErrors('publisherName')}" th:errors="*{publisherName}"
+                              class="text-danger">..</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="publishDate">Publish Date </label>
+                        <input type="date" class="input-control"
+                               id="publishDate" th:field="*{publishDate}" placeholder="Publish Date"
+                               required/><br/>
+                        <span th:if="${#fields.hasErrors('publishDate')}" th:errors="*{publishDate}"
+                              class="text-danger">..</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category </label>
+                        <select th:field="*{category}" class="input-control" id="category">
+                            <option th:each="category : ${categories}"
+                                    th:value="${category.id}" th:text="${category.name}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="language">Language </label>
+                        <input type="text" class="input-control"
+                               id="language" th:field="*{language}" placeholder="Language"
+                               required/><br/>
+                        <span th:if="${#fields.hasErrors('language')}" th:errors="*{language}"
+                              class="text-danger">..</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="pages">Number of pages </label>
+                        <input type="number" class="input-control"
+                               id="pages" th:field="*{pages}" placeholder="Number of Pages"
+                               required/><br/>
+                        <span th:if="${#fields.hasErrors('pages')}" th:errors="*{pages}"
+                              class="text-danger">..</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="brief">Brief </label>
+                        <textarea id="brief" class="form-control"
+                                  th:field="*{brief}" rows="8"
+                                  th:errorclass="field-error" placeholder="Brief"
+                                  required></textarea><br/>
+                        <span th:if="${#fields.hasErrors('brief')}" th:errors="*{brief}" class="text-danger">..</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

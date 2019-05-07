@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+>
 <head>
     <meta charset="UTF-8">
     <title>Book List</title>
@@ -17,10 +17,6 @@
                 <span th:if="${success}" th:text="${success}" class="text-success pull-left"></span><br/>
                 <span th:if="${fail}" th:text="${fail}" class="text-danger pull-left"></span><br/>
             </th:block>
-            <a th:href="@{/admin/book/add}" class="btn pull-left btn-primary"
-               style="margin-bottom: 20px; text-decoration: none">
-                <span class="fa fa-plus"></span> Add new book<br/>
-            </a>
             <h4 th:if="${#lists.isEmpty(books)}">There is not book available</h4>
             <table th:unless="${#lists.isEmpty(books)}" class="table table-sm table-bordered">
                 <thead>

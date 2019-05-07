@@ -1,6 +1,6 @@
 package com.example.edubookapp.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -25,10 +25,13 @@ public class Category implements Serializable {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("id DESC")
-//    @JsonBackReference
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler","category"})
     private List<Book> books = new ArrayList<>();
 
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OrderBy("id DESC")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "category"})
+    private List<PendingBook> pendingBooks = new ArrayList<>();
     public Category() {
     }
 
@@ -65,6 +68,20 @@ public class Category implements Serializable {
     public void removeBook(Book book){
         books.remove(book);
         book.setCategory(null);
+    }
+
+    public List<PendingBook> getPendingBooks() {
+        return pendingBooks;
+    }
+
+    public void addPendingBook(PendingBook pendingBook) {
+        pendingBooks.add(pendingBook);
+        pendingBook.setCategory(this);
+    }
+
+    public void removePendingBook(PendingBook pendingBook) {
+        pendingBooks.remove(pendingBook);
+        pendingBook.setCategory(null);
     }
 
     public String getImageLink() {

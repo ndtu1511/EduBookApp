@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+>
 <head>
     <meta charset="UTF-8">
     <title th:text="${category.getName()}"></title>
@@ -17,7 +17,8 @@
             <div class="card-columns count" th:unless="${#lists.isEmpty(category.books)}">
                 <div class="card no-border" th:each="book:${category.books}">
                     <a class="card-link" th:href="@{/book/{id}(id=${book.id})}">
-                        <img class="card-img-top img-book" th:src="@{/resources/upload/{imageLink}(imageLink=${book.imageLink})}" alt="">
+                        <img class="card-img-top img-book"
+                             th:src="@{/resources/upload/image/{imageLink}(imageLink=${book.imageLink})}" alt="">
                         <div class="title" th:text="${book.getTitle()}"></div>
                     </a>
                 </div>

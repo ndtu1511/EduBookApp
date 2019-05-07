@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${contentLink}"></title>
+</head>
+<body>
+
+<embed th:src="@{/resources/upload/content/{contentLink}(contentLink = ${contentLink})}" width="100%" height="2100px"/>
+<!--<h1 th:text="${contentLink}"></h1>-->
+</body>
+</html>

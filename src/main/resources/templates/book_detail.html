@@ -21,15 +21,18 @@
                 <div class="content_left">
                     <div>
                         <div th:if="${book.imageLink}!=null">
-                            <img th:src="@{/resources/upload/{imageLink}(imageLink=${book.imageLink})}" class="img"/>
+                            <img th:src="@{/resources/upload/image/{imageLink}(imageLink=${book.imageLink})}"
+                                 class="img"/>
                         </div>
                         <div th:unless="${book.imageLink}!=null">
                             <img src="/resources/img/book1.jpg" class="img"/>
                         </div>
                     </div>
-                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-                        <div class="between-left">
-                            <ul>
+
+                    <div class="between-left">
+
+                        <ul>
+                            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
                                 <li><a th:href="@{/admin/book/{id}/upload(id=${book.id})}" style="padding: 7px 16px">
                                     Upload
                                     Image</a></li>
@@ -39,9 +42,20 @@
                                 <li><a th:href="@{/admin/book/{id}/delete(id=${book.id})}" style="padding: 7px 16px">Delete
                                     this
                                     book</a></li>
-                            </ul>
-                        </div>
-                    </th:block>
+                            </th:block>
+                            <li th:if="${liked}=='None'">
+                                <a th:href="@{/book/{id}/like(id=${book.id})}" style="padding: 7px 16px">Like</a>
+                            </li>
+                            <li th:unless="${liked}=='None'">
+                                <a th:href="@{/book/{id}/delete/like(id=${book.id})}"
+                                   style="padding: 7px 16px">Liked</a>
+                            </li>
+                            <li><a th:href="@{/read/{contentLink}(contentLink = ${book.contentLink})}"
+                                   style="padding: 7px 16px">Read Book</a></li>
+                        </ul>
+
+
+                    </div>
                 </div>
                 <div class="content_right">
                     <div class="content_story">
@@ -51,11 +65,8 @@
                         </div>
                         <div>
                             <p style="font-size: 22px;">By
-                                <th:block th:each="author, iterStat:${book.getAuthors()}">
-                                    <span th:if="${iterStat.index}>=1">and</span>
-                                    <span style="
-                        font-weight: 700;" th:text="${author.getName()}"></span>
-                                </th:block>
+                                <span style="
+                        font-weight: 700;" th:text="${book.getAuthorName()}"></span>
                             </p>
                         </div>
                     </div>
@@ -73,13 +84,13 @@
                         </div>
                         <dl class="more_info">
                             <dt>PUBLISHER:</dt>
-                            <dd th:text="${book.getPublisher().getName()}"></dd>
+                            <dd th:text="${book.getPublisherName()}"></dd>
                             <dt>RELEASED:</dt>
                             <dd th:text="${#dates.format(book.getPublishDate(),'dd MMM, yyyy')}"></dd>
-                            <dt>ISBN:</dt>
-                            <dd th:text="${book.getIsbn()}"></dd>
                             <dt>LANGUAGE:</dt>
                             <dd th:text="${book.getLanguage()}"></dd>
+                            <dt>NUMBER OF PAGES:</dt>
+                            <dd th:text="${book.getPages()}"></dd>
                         </dl>
                         <form th:action="@{/book/{id}/comment(id=${book.id})}" method="post">
                             <div class="comment-submit">
@@ -97,13 +108,13 @@
                             <th:block th:unless="${#lists.isEmpty(book.comments)}">
                                 <div th:each="comment : ${book.comments}" style="margin-bottom: 20px">
                                     <strong th:text="${comment.user.username}"></strong>
-                                    <!--<span th:text="${#request.userPrincipal.name}"></span>-->
+                                    <!--<span th:text="${#request.userPrincipal.title}"></span>-->
                                     <span th:text="${#dates.format(comment.created,'dd MMM, yyyy')}"
                                           style="float: right"></span>
-                                    <!--<th:block sec:authorize="hasRole('ROLE_ADMIN')" >-->
+                                    <th:block th:if="${comment.user.username}==${username} or ${username}=='admin'">
                                         <a th:href="@{/book/{id}/comment/{comment_id}/delete(id=${book.id},comment_id=${comment.id})}"
                                            style="float: right;margin-right: 10px">Delete</a>
-                                    <!--</th:block>-->
+                                    </th:block>
                                     <br/>
                                     <span th:text="${comment.content}"></span>
                                     <hr/>

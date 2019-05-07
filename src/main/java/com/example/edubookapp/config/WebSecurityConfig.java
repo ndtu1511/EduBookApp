@@ -41,10 +41,9 @@ public class WebSecurityConfig {
         }
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-
+            http.headers().frameOptions().disable();
+            http.authorizeRequests().antMatchers("/**").permitAll();
             http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')");
-            http.authorizeRequests().antMatchers("/book/**").access("hasRole('MEMBER') or hasRole('ADMIN')");
-            http.authorizeRequests().antMatchers("/register","/","login","logout").permitAll();
             http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
 
             http.requestMatchers().antMatchers("/**").and().formLogin()
@@ -79,6 +78,7 @@ public class WebSecurityConfig {
         }
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+            http.headers().frameOptions().disable();
             http.csrf().ignoringAntMatchers("/api/**");
             http.authorizeRequests().antMatchers("/api/auth/**").permitAll();
             http.requestMatchers().antMatchers("/api/**")
@@ -90,7 +90,7 @@ public class WebSecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/api/**").access("hasRole('ADMIN') or hasRole('MEMBER')")
+                    .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                     .and()
                     .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         }
