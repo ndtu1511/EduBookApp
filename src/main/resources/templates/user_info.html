@@ -9,10 +9,20 @@
 <body>
 <nav th:replace="layout :: header"></nav>
 <nav th:replace="layout :: sidebar"></nav>
+<div class="text-center">
+    <span th:if="${success}" th:text="${success}" class="text-success"></span>
+    <span th:if="${fail}" th:text="${fail}" class="text-danger"></span>
+</div>
 <div class="global-category">
     <div class="view" style="text-align: left">
         <div class="view-column" style="margin-left: 20px; font-size: 18px">
             <h3>User Information</h3>
+            <img th:if="${user.imageLink}==null" src="/resources/img/default-avatar.png"
+                 class="avt"/>
+            <img th:unless="${user.imageLink}==null"
+                 th:src="@{/resources/upload/avatar/{imageLink}(imageLink=${user.imageLink})}"
+                 class="avt"/>
+            <br/>
             <span>Username: </span>
             <span th:text="${user.username}"></span>
             <br/>
@@ -22,6 +32,21 @@
             <span>Number of Comment: </span>
             <span th:text="${user.comments.size()}"></span>
             <br/>
+            <form th:action="@{/userInfo/upload/avatar}" method="post"
+                  enctype="multipart/form-data">
+                <div>
+                    <label>Upload avatar<span class="required">* : </span> </label>
+                    <input type="file" name="avatar" required="required"/>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-bottom: 20px">Upload avatar</button>
+            </form>
+            <th:block th:unless="${user.imageLink}==null">
+                <a th:href="@{/userInfo/delete/avatar}" class="btn btn-danger"
+                   style="margin-bottom: 20px; text-decoration: none">
+                    <span></span>Delete avatar<br/>
+                </a>
+                <br/>
+            </th:block>
             <a th:href="@{/book/add}" class="btn btn-primary"
                style="margin-bottom: 20px; text-decoration: none">
                 <span></span>Post a book<br/>

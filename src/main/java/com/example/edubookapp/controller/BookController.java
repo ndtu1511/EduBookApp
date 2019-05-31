@@ -99,7 +99,7 @@ public class BookController {
     }
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
-    @PostMapping("/book/save")
+    @PostMapping(value = "/book/save")
     public String savePending(@Valid PendingBook pendingBook,
                               BindingResult result,
                               @CurrentUser CustomUserDetail currentUser,

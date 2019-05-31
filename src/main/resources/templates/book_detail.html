@@ -107,6 +107,11 @@
                             <span th:if="${#lists.isEmpty(book.comments)}">There is no comment</span>
                             <th:block th:unless="${#lists.isEmpty(book.comments)}">
                                 <div th:each="comment : ${book.comments}" style="margin-bottom: 20px">
+                                    <img th:if="${comment.user.imageLink}==null" src="/resources/img/default-avatar.png"
+                                         class="avt-book"/>
+                                    <img th:unless="${comment.user.imageLink}==null"
+                                         th:src="@{/resources/upload/avatar/{imageLink}(imageLink=${comment.user.imageLink})}"
+                                         class="avt-book"/>
                                     <strong th:text="${comment.user.username}"></strong>
                                     <!--<span th:text="${#request.userPrincipal.title}"></span>-->
                                     <span th:text="${#dates.format(comment.created,'dd MMM, yyyy')}"

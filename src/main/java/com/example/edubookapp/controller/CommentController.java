@@ -33,7 +33,7 @@ public class CommentController {
     private BookService bookService;
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
-    @PostMapping("/book/{id}/comment")
+    @PostMapping(value = "/book/{id}/comment")
     public String comment(@PathVariable("id") Integer id,
                           @RequestParam("content") String content,
                           @CurrentUser CustomUserDetail customUserDetail,

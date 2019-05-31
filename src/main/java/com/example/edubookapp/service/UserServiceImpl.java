@@ -1,15 +1,15 @@
 package com.example.edubookapp.service;
 
-import com.example.edubookapp.model.Role;
 import com.example.edubookapp.model.User;
 import com.example.edubookapp.repository.RoleRepository;
 import com.example.edubookapp.repository.UserRepository;
+import com.example.edubookapp.util.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +21,8 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private BookService bookService;
     @Override
     @Transactional
     public Iterable<User> findAll() {
@@ -83,5 +85,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public User uploadAvatar(User user, MultipartFile multipartFile) {
+        bookService.writeFile(multipartFile, Const.UPLOAD_AVATAR);
+        user.setImageLink(multipartFile.getOriginalFilename());
+        return userRepository.save(user);
     }
 }

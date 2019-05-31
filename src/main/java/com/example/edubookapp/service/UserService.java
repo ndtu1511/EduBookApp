@@ -1,9 +1,8 @@
 package com.example.edubookapp.service;
 
 import com.example.edubookapp.model.User;
-import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,4 +18,6 @@ public interface UserService {
     Optional<User> findOne(Integer id);
     Boolean existsByUsername(String username);
     Boolean existsByEmail(String email);
+
+    User uploadAvatar(User user, MultipartFile multipartFile);
 }

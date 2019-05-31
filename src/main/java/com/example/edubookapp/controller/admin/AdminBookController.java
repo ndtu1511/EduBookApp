@@ -5,6 +5,7 @@ import com.example.edubookapp.model.Category;
 import com.example.edubookapp.service.*;
 import com.example.edubookapp.validator.BookValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,6 +32,8 @@ public class AdminBookController {
     private CommentService commentService;
     @Autowired
     private BookValidator bookValidator;
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/book")
     public String index(Model model){
         model.addAttribute("books",bookService.findAll());
@@ -38,6 +41,7 @@ public class AdminBookController {
         return "admin/book_list";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/pendingBook")
     public String indexPending(Model model) {
         model.addAttribute("books", pendingBookService.findAll());
@@ -45,6 +49,7 @@ public class AdminBookController {
         return "admin/pending_book_list";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/pendingComment")
     public String showPendingComment(Model model) {
         model.addAttribute("pendingComments", pendingCommentService.findAll());
@@ -52,6 +57,7 @@ public class AdminBookController {
         return "admin/pending_comment_list";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/pendingComment/{id}/save")
     public String savePendingComment(@PathVariable Integer id, RedirectAttributes redirect) {
         commentService.register(pendingCommentService.findOne(id).get());
@@ -60,18 +66,23 @@ public class AdminBookController {
         return "redirect:/admin/pendingComment";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/pendingComment/{id}/delete")
     public String deletePendingComment(@PathVariable Integer id, RedirectAttributes redirect) {
         pendingCommentService.delete(id);
         redirect.addFlashAttribute("success", "Delete comment successfully");
         return "redirect:/admin/pendingComment";
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/book/{id}/edit")
     public String edit(@PathVariable("id") Integer id, Model model) {
         model.addAttribute("book",bookService.findOneWithCategory(id));
         model.addAttribute("categories",categoryService.findAll());
         return "admin/book_form";
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/book/{id}/delete")
     public String delete(@PathVariable Integer id, RedirectAttributes redirectAttributes){
         bookService.delete(id);
@@ -88,7 +99,9 @@ public class AdminBookController {
             }
         });
     }
-    @PostMapping("/admin/book/save")
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/admin/book/save")
     public String save(@Valid Book book, BindingResult result, Model model, RedirectAttributes redirect){
         bookValidator.validate(book,result);
         model.addAttribute("categories",categoryService.findAll());
@@ -100,6 +113,7 @@ public class AdminBookController {
         return "redirect:/admin/book";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/admin/book/{requestUsername}/{id}/register")
     public String registerNewBook(@PathVariable Integer id,
                                   @PathVariable String requestUsername,
@@ -110,6 +124,7 @@ public class AdminBookController {
         return "redirect:/admin/book";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/book/{requestUsername}/{id}/delete")
     public String deletePendingBook(@PathVariable Integer id,
                                     @PathVariable String requestUsername,
@@ -118,13 +133,16 @@ public class AdminBookController {
         redirect.addFlashAttribute("success", "Delete this book successfully");
         return "redirect:/admin/book";
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/book/{id}/upload")
-    public String getUpload(@PathVariable("id") Integer id,Model model){
+    public String getUpload(@PathVariable("id") Integer id, Model model){
         model.addAttribute("book",bookService.findOne(id).get());
         model.addAttribute("categories",categoryService.findAll());
         return "admin/book_upload";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/admin/book/{id}/upload/image")
     public String postUploadImage(@PathVariable("id") Integer id,
                              @RequestParam("imageLink")MultipartFile imageFile,
@@ -136,6 +154,7 @@ public class AdminBookController {
         return "redirect:/book/{id}";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/admin/book/{id}/upload/content")
     public String postUploadContent(@PathVariable("id") Integer id,
                                     @RequestParam("contentLink") MultipartFile contentFile,

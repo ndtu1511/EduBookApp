@@ -3,6 +3,7 @@ package com.example.edubookapp.controller.admin;
 import com.example.edubookapp.service.CategoryService;
 import com.example.edubookapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ public class AdminUserController {
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/user")
     public String index(Model model){
         model.addAttribute("categories", categoryService.findAll());

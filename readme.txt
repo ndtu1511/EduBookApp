@@ -28,3 +28,14 @@ Api cho những người có tài khoản
   -api DELETE:
   /api/book/{id}/comment/{commentId}/delete: xoá comment theo id, chỉ user của bình luận đó hoặc admin mới có quyền xoá
   /api/book/{id}/like/delete: huỷ like
+
+UPDATE
+    -api GET:
+    /api/user/comment: trả về tất cả các comment của user hiện tại
+    /api/user/download: trả về thông tin những quyển sách đã lưu lại
+    -api POST:
+    /api/book/{id}/download: request 1 file json có dạng {"currentPage":(1 số)} để lưu lại trang sách
+    /api/user/avatar/upload: request 1 multipart/form-data để lưu ảnh đại diện của user
+    -api DELETE:
+    /api/user/avatar/delete: xoá ảnh đại diện;
+    default avatar nằm ở /resources/img/default-avatar.png(Khi tạo tài khoản xong sẽ set avatar là default avatar này)

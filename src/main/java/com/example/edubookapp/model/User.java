@@ -39,6 +39,8 @@ public class User implements Serializable {
     @Column(name = "password", nullable = false, length = 60)
     @JsonIgnore
     private String password;
+    @Column(name = "image_link")
+    private String imageLink;
 
     @Transient
     @JsonIgnore
@@ -175,5 +177,17 @@ public class User implements Serializable {
     public void removeBooks(Book book) {
         books.remove(book);
         book.setUser(null);
+    }
+
+    public String getImageLink() {
+        return imageLink;
+    }
+
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
+    }
+
+    public void deleteImage() {
+        this.imageLink = null;
     }
 }

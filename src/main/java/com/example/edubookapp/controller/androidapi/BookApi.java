@@ -29,6 +29,8 @@ public class BookApi {
     private CommentService commentService;
     @Autowired
     private LikeService likeService;
+    @Autowired
+    private DownloadService downloadService;
 
     @GetMapping("/{id}")
     public Map<String, Object> show(@PathVariable("id") Integer id,
@@ -117,5 +119,21 @@ public class BookApi {
         Like like = likeService.findByBookIdAndUserId(id, user.getId()).get();
         likeService.delete(like.getId());
         return ResponseEntity.ok(new ApiResponse(true, "Deleted like!"));
+    }
+
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @PostMapping("/{id}/download")
+    public ResponseEntity<?> download(@PathVariable("id") Integer id,
+                                      @CurrentUser CustomUserDetail customUserDetail,
+                                      @Valid @RequestBody DownloadRequest downloadRequest) {
+        Book book = bookService.findOne(id).get();
+        int currentPage = downloadRequest.getCurrentPage();
+        Download download = new Download();
+        download.setBook(book);
+        download.setUser(userService.findByUserName(customUserDetail.getUsername()));
+        download.setDownloadDate(new Date());
+        download.setCurrentPage(currentPage);
+        downloadService.save(download);
+        return ResponseEntity.ok(new ApiResponse(true, "saved"));
     }
 }

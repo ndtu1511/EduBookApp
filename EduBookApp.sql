@@ -63,7 +63,8 @@ create table `user` (
 	id int(10) unsigned not null,
     username varchar(100) not null,
     email varchar(255) not null,
-    `password` varchar(60) not null
+    `password` varchar(60) not null,
+    image_link varchar(255)
 );
 create table `role`(
 	id int(10) unsigned not null,
@@ -140,9 +141,12 @@ ALTER TABLE download
     ADD CONSTRAINT fk_category_pending FOREIGN KEY (category_id) REFERENCES category( id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 insert into category(`id`,`name`,image_link) values
-(1,'AI & Machine Learning','/resources/img/ai.jpg'),
-(2,'Programming Language','/resources/img/pg.jpg'),
-(3,'Web Development & Design','/resources/img/wd.jpg'),
-(4,'Databases & Big Data','/resources/img/sql.jpg'),
-(5,'Network Security','/resources/img/hack.jpg'),
-(6,'Operating Systems','/resources/img/linux.jpg');
+(1, 'Tâm lí - Kỹ năng sống', '/resources/img/tam-li.jpg'),
+(2, 'Kinh tế - Quản lí', '/resources/img/kinh-te.jpg'),
+(3, 'Lịch sử - Chính trị', '/resources/img/linh-su.jpg'),
+(4, 'Tuổi học trò', '/resources/img/tuoi-hoc-tro.jpg'),
+(5, 'Tiểu thuyết nước ngoài', '/resources/img/tieu-thuyet.jpg'),
+(6, 'Phiêu lưu - Mạo hiểm', '/resources/img/phieu-luu-mao-hiem.jpg'),
+(7, 'Truyện cười - Tiếu lâm', '/resources/img/truyen-cuoi.jpg'),
+(8, 'Kiếm hiệp', '/resources/img/kiem-hiep.jpg'),
+(9, 'Công nghệ thông tin', '/resources/img/ai.jpg');

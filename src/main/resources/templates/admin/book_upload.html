@@ -20,7 +20,7 @@
                   enctype="multipart/form-data">
                 <div th:if="${book.imageLink}!=null">
                     <label style="font-weight: 700">Previous image</label><br/>
-                    <img th:src="@{/resources/upload/{imageLink}(imageLink=${book.imageLink})}" class="img"/>
+                    <img th:src="@{/resources/upload/image/{imageLink}(imageLink=${book.imageLink})}" class="img"/>
                 </div>
                 <p></p>
                 <div>
