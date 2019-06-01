@@ -1,10 +1,12 @@
 package com.example.edubookapp.payload;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 public class DownloadRequest {
-    @NotBlank
-    private int currentPage;
+    @NotNull
+    @Min(1)
+    private Integer currentPage;
 
     public DownloadRequest(int currentPage) {
         this.currentPage = currentPage;
@@ -16,5 +18,8 @@ public class DownloadRequest {
 
     public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
+    }
+
+    public DownloadRequest() {
     }
 }

@@ -128,12 +128,20 @@ public class BookApi {
                                       @Valid @RequestBody DownloadRequest downloadRequest) {
         Book book = bookService.findOne(id).get();
         int currentPage = downloadRequest.getCurrentPage();
-        Download download = new Download();
-        download.setBook(book);
-        download.setUser(userService.findByUserName(customUserDetail.getUsername()));
-        download.setDownloadDate(new Date());
-        download.setCurrentPage(currentPage);
-        downloadService.save(download);
+        User user = userService.findByUserName(customUserDetail.getUsername());
+        if (downloadService.findByBookIdAndUserId(book.getId(), user.getId()).isPresent()) {
+            Download download = downloadService.findByBookIdAndUserId(book.getId(), user.getId()).get();
+            download.setCurrentPage(currentPage);
+            downloadService.save(download);
+        } else {
+            Download download = new Download();
+            download.setBook(book);
+            download.setUser(user);
+            download.setDownloadDate(new Date());
+            download.setCurrentPage(currentPage);
+            downloadService.save(download);
+        }
         return ResponseEntity.ok(new ApiResponse(true, "saved"));
     }
+
 }

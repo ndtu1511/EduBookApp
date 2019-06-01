@@ -111,4 +111,15 @@ public class UserApi {
         }
         return ResponseEntity.ok(commentResponseUsers);
     }
+
+    @DeleteMapping("/download/{id}/delete")
+    public ResponseEntity<?> deleteDownload(@PathVariable Integer id, @CurrentUser CustomUserDetail customUserDetail) {
+        User user = userService.findByUserName(customUserDetail.getUsername());
+        Download download = downloadService.findById(id).get();
+        if (download.getUser().getId() != customUserDetail.getId()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, "You can not delete this"));
+        }
+        downloadService.delete(id);
+        return ResponseEntity.ok(new ApiResponse(true, "delete successfully"));
+    }
 }

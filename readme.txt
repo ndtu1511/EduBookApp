@@ -39,3 +39,7 @@ UPDATE
     -api DELETE:
     /api/user/avatar/delete: xoá ảnh đại diện;
     default avatar nằm ở /resources/img/default-avatar.png(Khi tạo tài khoản xong sẽ set avatar là default avatar này)
+
+UPDATE
+    -api DELETE:
+    /api/user/download/{id}/delete: xoá thông tin quyển sách đã lưu

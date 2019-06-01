@@ -1,9 +1,7 @@
 package com.example.edubookapp.model;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -23,12 +21,11 @@ public class Download implements Serializable {
     @JoinColumn(name = "book_id", referencedColumnName = "id")
     private Book book;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "download_date", nullable = false)
     private Date downloadDate;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "current_page", nullable = false)
     private int currentPage;
 
