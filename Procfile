@@ -1,1 +1,1 @@
-web: java -jar target/EduBookApp.jar
+web: java -jar target/EduBookApp-1.0.jar
