@@ -5,8 +5,8 @@
 
     <groupId>com.example</groupId>
     <artifactId>edubookapp</artifactId>
-    <version>0.1.0</version>
-    <packaging>jar</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <name>edubookapp</name>
     <description>Project for Spring Boot</description>
