@@ -20,7 +20,7 @@
             <img th:if="${user.imageLink}==null" src="/resources/img/default-avatar.png"
                  class="avt"/>
             <img th:unless="${user.imageLink}==null"
-                 th:src="@{/resources/upload/avatar/{imageLink}(imageLink=${user.imageLink})}"
+                 th:src="@{/data/avatar/{imageLink}(imageLink=${user.imageLink})}"
                  class="avt"/>
             <br/>
             <span>Username: </span>
